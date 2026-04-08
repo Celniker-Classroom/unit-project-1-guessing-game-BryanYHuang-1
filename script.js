@@ -16,6 +16,19 @@ function updateScore(scores){
     document.getElementById("wins").textContent = "Total wins: " + totalWins; 
     document.getElementById("avgScore").textContent = "Average Score: " + (totalGuesses/totalWins).toFixed(1); 
     document.getElementById("avgGuesses").textContent = "Average Guesses: " + (totalGuesses/totalWins).toFixed(1); 
+    scores.push(score); 
+    
+    scores.sort(function(a, b){return a - b});
+
+    let leaderboard = document.getElementsByName("leaderboard"); 
+    for (let i = 0; i < leaderboard.length; i++){
+        if (i < scores.length){
+            leaderboard[i].textContent = scores[i]; 
+        }
+        else {
+            leaderboard[i].textContent = "--";
+        }
+    }
 }
 
 //reset button function
