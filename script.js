@@ -4,8 +4,31 @@ let guessCount = 0;
 let totalWins = 0; 
 let totalGuesses = 0; 
 let scores = 0; 
+let gameActive = false; 
 
 const playerName = prompt("Please type your name below."); 
+
+//update score when win
+function updateScore(scores){
+    totalWins ++; 
+    totalGuesses += scores; 
+
+    document.getElementById("wins").textContent = "Total wins: " + totalWins; 
+    document.getElementById("avgScore").textContent = "Average Score: " + (totalGuesses/totalWins).toFixed(1); 
+    document.getElementById("avgGuesses").textContent = "Average Guesses: " + (totalGuesses/totalWins).toFixed(1); 
+}
+
+//reset button function
+function resetButtons(){
+    document.getElementById("guessBtn").disabled = true; 
+    document.getElementById("giveUpBtn").disabled = true; 
+    document.getElementById("playBtn").disabled = false; 
+
+    let levelRadios = document.getElementsByName("level"); 
+    for (let i=0; i< levelRadios.length; i++){
+        levelRadios[i].disabled = false; 
+    }
+}
 
 //Play
 document.getElementById("playBtn").addEventListener("click", function(){
@@ -19,6 +42,8 @@ document.getElementById("playBtn").addEventListener("click", function(){
 
     //pick answer
     answer = Math.floor(Math.random() * range) + 1; 
+    guessCount = 0; 
+    gameActive = true;
 
     //Disable & Enable buttons and radio choices
     document.getElementById("msg").textContent = playerName + ", guess a number between 1 and " + range; 
@@ -36,6 +61,12 @@ document.getElementById("playBtn").addEventListener("click", function(){
 
 // Guess button
 document.getElementById("guessBtn").addEventListener("click", function(){
+    if (!gameActive) {
+        // If game is not active (after correct guess), clicking guess button resets for next round
+        resetButtons();
+        return;
+    }
+    
     let input = document.getElementById("guess").value; 
     let num = parseInt(input);
     if (isNaN(num)){
@@ -47,52 +78,18 @@ document.getElementById("guessBtn").addEventListener("click", function(){
     let diff = Math.abs(num - answer);
     if (num === answer){
         document.getElementById("msg").textContent = "Correct! " + playerName + " got it in " + guessCount + " guesses!";
+        gameActive = false;
+        resetButtons(); 
         updateScore(guessCount);
         guessCount = 0;
-        // Reset buttons for next round
-        document.getElementById("guessBtn").disabled = true; 
-        document.getElementById("giveUpBtn").disabled = true; 
-        document.getElementById("playBtn").disabled = false; 
-        let levelRadios = document.getElementsByName("level"); 
-        for (let i=0; i< levelRadios.length; i++){
-            levelRadios[i].disabled = false; 
-        }
     }
 }); 
-
-function resetButtons(){
-    document.getElementById("guessBtn").disabled = true; 
-    document.getElementById("giveUpBtn").disabled = true; 
-    document.getElementById("playBtn").disabled = false; 
-
-    let levelRadios = document.getElementsByName("level"); 
-    for (let i=0; i< levelRadios.length; i++){
-        levelRadios[i].disabled = false; 
-    }
-}
 
 // Give Up button
 document.getElementById("giveUpBtn").addEventListener("click", function(){
     document.getElementById("msg").textContent = "The answer was " + answer + ". Better luck next time!";
+    gameActive = false;
     guessCount = 0;
     // Reset buttons for next round
     resetButtons(); 
 }); 
-
-
-
-if (num === answer){
-    document.getElementById("msg").textContent = "Correct! " + playerName + " got it in " + guessCount + " guesses!";
-    updateScore(guessCount); 
-    resetButtons(); //stop guess & give up restart play
-}
-
-//update score when win
-function updateScore(score){
-    totalWins ++; 
-    totalGuesses += score; 
-
-    document.getElementById("wins").textContent = "Total wins: " + totalWins; 
-    document.getElementById("avgScore").textContent = "Average Score: " + (totalGuesses/totalWins).toFixed(1); 
-    document.getElementById("avgGuesses").textContent = "Average Guesses: " + (totalGuesses/totalWins).toFixed(1); 
-}
