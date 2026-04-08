@@ -33,46 +33,19 @@ document.getElementById("playBtn").addEventListener("click", function(){
     }
 }); 
 
+
 // Guess button
 document.getElementById("guessBtn").addEventListener("click", function(){
-    let guess = parseInt(document.getElementById("guess").value);
-    if (isNaN(guess)) {
-        document.getElementById("msg").textContent = "Please enter a valid number.";
-        return;
+    let input = document.getElementById("guess").value; 
+    let num = parseInt(input);
+    if (isNaN(num)){
+        document.getElementById("msg").textContent = "Please enter a valid number!"; 
+        return; 
     }
-    guessCount++;
-    if (guess === answer){
-        document.getElementById("msg").textContent = "Correct! You won in " + guessCount + " guesses.";
-        totalWins++;
-        document.getElementById("wins").textContent = "Total wins: " + totalWins;
-        // disable buttons
-        document.getElementById("guessBtn").disabled = true;
-        document.getElementById("giveUpBtn").disabled = true;
-        document.getElementById("playBtn").disabled = false;
-        // enable radios
-        let levelRadios = document.getElementsByName("level");
-        for (let i=0; i< levelRadios.length; i++){
-            levelRadios[i].disabled = false;
-        }
-        guessCount = 0;
-    } else if (guess < answer){
-        document.getElementById("msg").textContent = "Too low!";
-    } else {
-        document.getElementById("msg").textContent = "Too high!";
-    }
-});
 
-// Give up button
-document.getElementById("giveUpBtn").addEventListener("click", function(){
-    document.getElementById("msg").textContent = "The answer was " + answer + ". You gave up after " + guessCount + " guesses.";
-    // disable buttons
-    document.getElementById("guessBtn").disabled = true;
-    document.getElementById("giveUpBtn").disabled = true;
-    document.getElementById("playBtn").disabled = false;
-    // enable radios
-    let levelRadios = document.getElementsByName("level");
-    for (let i=0; i< levelRadios.length; i++){
-        levelRadios[i].disabled = false;
+    guessCount ++; 
+    let diff = Math.abs(num - answer);
+    if (num === answer){
+        document.getElementById("msg").textContent = "Correct! " + playerName + " got it in " + guessCount + " guesses!";
     }
-    guessCount = 0;
 }); 
