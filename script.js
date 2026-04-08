@@ -47,5 +47,39 @@ document.getElementById("guessBtn").addEventListener("click", function(){
     let diff = Math.abs(num - answer);
     if (num === answer){
         document.getElementById("msg").textContent = "Correct! " + playerName + " got it in " + guessCount + " guesses!";
+        updateScore(guessCount);
+        guessCount = 0;
+        // Reset buttons for next round
+        document.getElementById("guessBtn").disabled = true; 
+        document.getElementById("giveUpBtn").disabled = true; 
+        document.getElementById("playBtn").disabled = false; 
+        let levelRadios = document.getElementsByName("level"); 
+        for (let i=0; i< levelRadios.length; i++){
+            levelRadios[i].disabled = false; 
+        }
     }
 }); 
+
+// Give Up button
+document.getElementById("giveUpBtn").addEventListener("click", function(){
+    document.getElementById("msg").textContent = "The answer was " + answer + ". Better luck next time!";
+    guessCount = 0;
+    // Reset buttons for next round
+    document.getElementById("guessBtn").disabled = true; 
+    document.getElementById("giveUpBtn").disabled = true; 
+    document.getElementById("playBtn").disabled = false; 
+    let levelRadios = document.getElementsByName("level"); 
+    for (let i=0; i< levelRadios.length; i++){
+        levelRadios[i].disabled = false; 
+    }
+}); 
+
+//update score when win
+function updateScore(score){
+    totalWins ++; 
+    totalGuesses += score; 
+
+    document.getElementById("wins").textContent = "Total wins: " + totalWins; 
+    document.getElementById("avgScore").textContent = "Average Score: " + (totalGuesses/totalWins).toFixed(1); 
+    document.getElementById("avgGuesses").textContent = "Average Guesses: " + (totalGuesses/totalWins).toFixed(1); 
+}
