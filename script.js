@@ -60,19 +60,32 @@ document.getElementById("guessBtn").addEventListener("click", function(){
     }
 }); 
 
+function resetButtons(){
+    document.getElementById("guessBtn").disabled = true; 
+    document.getElementById("giveUpBtn").disabled = true; 
+    document.getElementById("playBtn").disabled = false; 
+
+    let levelRadios = document.getElementsByName("level"); 
+    for (let i=0; i< levelRadios.length; i++){
+        levelRadios[i].disabled = false; 
+    }
+}
+
 // Give Up button
 document.getElementById("giveUpBtn").addEventListener("click", function(){
     document.getElementById("msg").textContent = "The answer was " + answer + ". Better luck next time!";
     guessCount = 0;
     // Reset buttons for next round
-    document.getElementById("guessBtn").disabled = true; 
-    document.getElementById("giveUpBtn").disabled = true; 
-    document.getElementById("playBtn").disabled = false; 
-    let levelRadios = document.getElementsByName("level"); 
-    for (let i=0; i< levelRadios.length; i++){
-        levelRadios[i].disabled = false; 
-    }
+    resetButtons(); 
 }); 
+
+
+
+if (num === answer){
+    document.getElementById("msg").textContent = "Correct! " + playerName + " got it in " + guessCount + " guesses!";
+    updateScore(guessCount); 
+    resetButtons(); //stop guess & give up restart play
+}
 
 //update score when win
 function updateScore(score){
