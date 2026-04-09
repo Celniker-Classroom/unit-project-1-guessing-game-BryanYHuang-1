@@ -6,7 +6,8 @@ let totalGuesses = 0;
 let scores = 0; 
 let gameActive = false; 
 
-const playerName = prompt("Please type your name below."); 
+let playerName = prompt("Please type your name below."); 
+playerName = playerName.charAt(0).toUpperCase() + playerName.slice(1).toLowerCase();
 
 //update score when win
 function updateScore(scores){
