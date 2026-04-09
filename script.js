@@ -3,7 +3,7 @@ let answer = 0;
 let guessCount = 0; 
 let totalWins = 0; 
 let totalGuesses = 0; 
-let leaderboardData = []; 
+let scores = []; 
 let gameActive = false; 
 let range = 3;
 let roundStartTime;
@@ -39,22 +39,24 @@ document.getElementById("fastest").textContent = "Fastest Game: N/A";
 document.getElementById("avgTime").textContent = "Average Time: N/A";
 
 //update score when win
-function updateScore(score, isWin = true, name = playerName){
-    if (isWin) totalWins ++; 
-    totalGuesses += score; 
+function updateScore(score, isWin = true){
+    if (isWin) {
+        totalWins ++; 
+        totalGuesses += score; 
+    }
 
     document.getElementById("wins").textContent = "Total wins: " + totalWins; 
     document.getElementById("avgScore").textContent = "Average Score: " + (totalWins > 0 ? (totalGuesses/totalWins).toFixed(1) : "N/A"); 
     document.getElementById("fastest").textContent = "Fastest Game: " + (roundCount > 0 ? (fastestTime / 1000).toFixed(1) + "s" : "N/A");
     document.getElementById("avgTime").textContent = "Average Time: " + (roundCount > 0 ? (totalTime / roundCount / 1000).toFixed(1) + "s" : "N/A");
-    leaderboardData.push({name: name, score: score}); 
+    scores.push(score); 
     
-    leaderboardData.sort(function(a, b){return a.score - b.score});
+    scores.sort(function(a, b){return a - b});
 
     let leaderboard = document.querySelectorAll('li[name="leaderboard"]'); 
     for (let i = 0; i < leaderboard.length; i++){
-        if (i < leaderboardData.length){
-            leaderboard[i].textContent = leaderboardData[i].name + ": " + leaderboardData[i].score; 
+        if (i < scores.length){
+            leaderboard[i].textContent = scores[i]; 
         }
         else {
             leaderboard[i].textContent = "--";
