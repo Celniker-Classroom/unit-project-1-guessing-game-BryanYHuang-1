@@ -12,6 +12,9 @@ let totalTime = 0;
 let roundCount = 0; 
 
 let playerName = prompt("Please type your name below."); 
+if (playerName === null || playerName.trim() === "") {
+    playerName = "Player";
+}
 playerName = playerName.charAt(0).toUpperCase() + playerName.slice(1).toLowerCase();
 
 function updateDate() {
@@ -29,6 +32,12 @@ function updateDate() {
 updateDate();
 setInterval(updateDate, 1000);
 
+// Initialize stat displays
+document.getElementById("wins").textContent = "Total wins: 0";
+document.getElementById("avgScore").textContent = "Average Score: N/A";
+document.getElementById("fastest").textContent = "Fastest Game: N/A";
+document.getElementById("avgTime").textContent = "Average Time: N/A";
+
 //update score when win
 function updateScore(score, isWin = true, name = playerName){
     if (isWin) totalWins ++; 
@@ -36,9 +45,8 @@ function updateScore(score, isWin = true, name = playerName){
 
     document.getElementById("wins").textContent = "Total wins: " + totalWins; 
     document.getElementById("avgScore").textContent = "Average Score: " + (totalWins > 0 ? (totalGuesses/totalWins).toFixed(1) : "N/A"); 
-    document.getElementById("avgGuesses").textContent = "Average Guesses: " + (totalWins > 0 ? (totalGuesses/totalWins).toFixed(1) : "N/A"); 
-    document.getElementById("fastest").textContent = "Fastest Game: " + (fastestTime === Infinity ? "" : (fastestTime / 1000).toFixed(1) + "s");
-    document.getElementById("avgTime").textContent = "Average Time: " + (roundCount > 0 ? (totalTime / roundCount / 1000).toFixed(1) + "s" : "");
+    document.getElementById("fastest").textContent = "Fastest Game: " + (roundCount > 0 ? (fastestTime / 1000).toFixed(1) + "s" : "N/A");
+    document.getElementById("avgTime").textContent = "Average Time: " + (roundCount > 0 ? (totalTime / roundCount / 1000).toFixed(1) + "s" : "N/A");
     leaderboardData.push({name: name, score: score}); 
     
     leaderboardData.sort(function(a, b){return a.score - b.score});
