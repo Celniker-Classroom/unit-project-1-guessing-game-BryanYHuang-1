@@ -3,28 +3,50 @@ let answer = 0;
 let guessCount = 0; 
 let totalWins = 0; 
 let totalGuesses = 0; 
-let scores = 0; 
+let leaderboardData = []; 
 let gameActive = false; 
+let range = 3;
+let roundStartTime;
+let fastestTime = Infinity;
+let totalTime = 0;
+let roundCount = 0; 
 
 let playerName = prompt("Please type your name below."); 
 playerName = playerName.charAt(0).toUpperCase() + playerName.slice(1).toLowerCase();
 
+function updateDate() {
+    let now = new Date();
+    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    let day = now.getDate();
+    let suffix = (day % 10 === 1 && day !== 11) ? 'st' : (day % 10 === 2 && day !== 12) ? 'nd' : (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
+    let hours = String(now.getHours()).padStart(2, '0');
+    let minutes = String(now.getMinutes()).padStart(2, '0');
+    let seconds = String(now.getSeconds()).padStart(2, '0');
+    let dateStr = months[now.getMonth()] + ' ' + day + suffix + ', ' + now.getFullYear() + ' ' + hours + ':' + minutes + ':' + seconds;
+    document.getElementById("date").textContent = dateStr;
+}
+
+updateDate();
+setInterval(updateDate, 1000);
+
 //update score when win
-function updateScore(scores){
-    totalWins ++; 
-    totalGuesses += scores; 
+function updateScore(score, isWin = true, name = playerName){
+    if (isWin) totalWins ++; 
+    totalGuesses += score; 
 
     document.getElementById("wins").textContent = "Total wins: " + totalWins; 
-    document.getElementById("avgScore").textContent = "Average Score: " + (totalGuesses/totalWins).toFixed(1); 
-    document.getElementById("avgGuesses").textContent = "Average Guesses: " + (totalGuesses/totalWins).toFixed(1); 
-    scores.push(score); 
+    document.getElementById("avgScore").textContent = "Average Score: " + (totalWins > 0 ? (totalGuesses/totalWins).toFixed(1) : "N/A"); 
+    document.getElementById("avgGuesses").textContent = "Average Guesses: " + (totalWins > 0 ? (totalGuesses/totalWins).toFixed(1) : "N/A"); 
+    document.getElementById("fastest").textContent = "Fastest Game: " + (fastestTime === Infinity ? "" : (fastestTime / 1000).toFixed(1) + "s");
+    document.getElementById("avgTime").textContent = "Average Time: " + (roundCount > 0 ? (totalTime / roundCount / 1000).toFixed(1) + "s" : "");
+    leaderboardData.push({name: name, score: score}); 
     
-    scores.sort(function(a, b){return a - b});
+    leaderboardData.sort(function(a, b){return a.score - b.score});
 
-    let leaderboard = document.getElementsByName("leaderboard"); 
+    let leaderboard = document.querySelectorAll('li[name="leaderboard"]'); 
     for (let i = 0; i < leaderboard.length; i++){
-        if (i < scores.length){
-            leaderboard[i].textContent = scores[i]; 
+        if (i < leaderboardData.length){
+            leaderboard[i].textContent = leaderboardData[i].name + ": " + leaderboardData[i].score; 
         }
         else {
             leaderboard[i].textContent = "--";
@@ -47,7 +69,7 @@ function resetButtons(){
 //Play
 document.getElementById("playBtn").addEventListener("click", function(){
     let radios = document.getElementsByName("level"); 
-    let range = 3; 
+    range = 3; 
     for (let i = 0; i < radios.length; i++){
         if (radios[i].checked){
             range = parseInt(radios[i].value); 
@@ -58,6 +80,7 @@ document.getElementById("playBtn").addEventListener("click", function(){
     answer = Math.floor(Math.random() * range) + 1; 
     guessCount = 0; 
     gameActive = true;
+    roundStartTime = Date.now();
 
     //Disable & Enable buttons and radio choices
     document.getElementById("msg").textContent = playerName + ", guess a number between 1 and " + range; 
@@ -91,6 +114,10 @@ document.getElementById("guessBtn").addEventListener("click", function(){
     guessCount ++; 
     let diff = Math.abs(num - answer);
     if (num === answer){
+        let timeTaken = Date.now() - roundStartTime;
+        roundCount++;
+        totalTime += timeTaken;
+        if (timeTaken < fastestTime) fastestTime = timeTaken;
         document.getElementById("msg").textContent = "Correct! " + playerName + " got it in " + guessCount + " guesses!";
         gameActive = false;
         resetButtons(); 
@@ -129,9 +156,13 @@ document.getElementById("guessBtn").addEventListener("click", function(){
 
 // Give Up button
 document.getElementById("giveUpBtn").addEventListener("click", function(){
+    let timeTaken = Date.now() - roundStartTime;
+    roundCount++;
+    totalTime += timeTaken;
+    if (timeTaken < fastestTime) fastestTime = timeTaken;
     document.getElementById("msg").textContent = "The answer was " + answer + ". Better luck next time!";
     gameActive = false;
-    guessCount = 0;
+    updateScore(range, false);
     // Reset buttons for next round
     resetButtons(); 
 }); 
