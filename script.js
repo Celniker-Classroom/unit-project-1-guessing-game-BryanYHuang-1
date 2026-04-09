@@ -38,12 +38,10 @@ document.getElementById("avgScore").textContent = "Average Score: N/A";
 document.getElementById("fastest").textContent = "Fastest Game: N/A";
 document.getElementById("avgTime").textContent = "Average Time: N/A";
 
-//update score when win
-function updateScore(score, isWin = true){
-    if (isWin) {
-        totalWins ++; 
-        totalGuesses += score; 
-    }
+//update score when a round finishes
+function updateScore(score){
+    totalWins ++; 
+    totalGuesses += score; 
 
     document.getElementById("wins").textContent = "Total wins: " + totalWins; 
     document.getElementById("avgScore").textContent = "Average Score: " + (totalWins > 0 ? (totalGuesses/totalWins).toFixed(1) : "N/A"); 
