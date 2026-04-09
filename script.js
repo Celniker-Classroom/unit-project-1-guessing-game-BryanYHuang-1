@@ -96,6 +96,34 @@ document.getElementById("guessBtn").addEventListener("click", function(){
         updateScore(guessCount);
         guessCount = 0;
     }
+    //higher
+    else if (num < answer){
+        let temp = ""; 
+        if (diff <= 2){
+            temp = "Hot!"
+        }
+        else if (diff <= 5){
+            temp = "Warm!"
+        }
+        else{
+            temp = "Cold!"
+        }
+        document.getElementById("msg").textContent = "Too low! " + temp; 
+    }
+    //lower
+    else{
+            let temp = ""; 
+            if (diff <= 2){
+                temp = "Hot!"
+            }
+            else if (diff <= 5){
+                temp = "Warm!"
+            }
+            else{
+                temp = "Cold!"
+            }
+            document.getElementById("msg").textContent = "Too high! " + temp; 
+        }
 }); 
 
 // Give Up button
