@@ -3,21 +3,20 @@ let answer = 0;
 let guessCount = 0; 
 let totalWins = 0; 
 let totalGuesses = 0; 
-let scores = []; 
+let scores = 0; 
 let gameActive = false; 
-let range = 3; 
 
 let playerName = prompt("Please type your name below."); 
 playerName = playerName.charAt(0).toUpperCase() + playerName.slice(1).toLowerCase();
 
 //update score when win
-function updateScore(score, isWin = true){
-    if (isWin) totalWins ++; 
-    totalGuesses += score; 
+function updateScore(scores){
+    totalWins ++; 
+    totalGuesses += scores; 
 
     document.getElementById("wins").textContent = "Total wins: " + totalWins; 
-    document.getElementById("avgScore").textContent = "Average Score: " + (totalWins > 0 ? (totalGuesses/totalWins).toFixed(1) : "N/A"); 
-    document.getElementById("avgGuesses").textContent = "Average Guesses: " + (totalWins > 0 ? (totalGuesses/totalWins).toFixed(1) : "N/A"); 
+    document.getElementById("avgScore").textContent = "Average Score: " + (totalGuesses/totalWins).toFixed(1); 
+    document.getElementById("avgGuesses").textContent = "Average Guesses: " + (totalGuesses/totalWins).toFixed(1); 
     scores.push(score); 
     
     scores.sort(function(a, b){return a - b});
@@ -48,7 +47,7 @@ function resetButtons(){
 //Play
 document.getElementById("playBtn").addEventListener("click", function(){
     let radios = document.getElementsByName("level"); 
-    range = 3; 
+    let range = 3; 
     for (let i = 0; i < radios.length; i++){
         if (radios[i].checked){
             range = parseInt(radios[i].value); 
@@ -61,7 +60,7 @@ document.getElementById("playBtn").addEventListener("click", function(){
     gameActive = true;
 
     //Disable & Enable buttons and radio choices
-    document.getElementById("msg").textContent = capitalized + ", guess a number between 1 and " + range; 
+    document.getElementById("msg").textContent = playerName + ", guess a number between 1 and " + range; 
     document.getElementById("guess").value=""; 
     document.getElementById("guessBtn").disabled = false; 
     document.getElementById("giveUpBtn").disabled = false; 
@@ -92,7 +91,7 @@ document.getElementById("guessBtn").addEventListener("click", function(){
     guessCount ++; 
     let diff = Math.abs(num - answer);
     if (num === answer){
-        document.getElementById("msg").textContent = "Correct! " + capitalized + " got it in " + guessCount + " guesses!";
+        document.getElementById("msg").textContent = "Correct! " + playerName + " got it in " + guessCount + " guesses!";
         gameActive = false;
         resetButtons(); 
         updateScore(guessCount);
@@ -132,7 +131,7 @@ document.getElementById("guessBtn").addEventListener("click", function(){
 document.getElementById("giveUpBtn").addEventListener("click", function(){
     document.getElementById("msg").textContent = "The answer was " + answer + ". Better luck next time!";
     gameActive = false;
-    updateScore(range, false);
+    guessCount = 0;
     // Reset buttons for next round
     resetButtons(); 
 }); 
